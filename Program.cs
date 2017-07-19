@@ -145,13 +145,17 @@ namespace BanHammer
                             Dictionary<string, int> dict = new Dictionary<string, int>();
                             foreach (var chat in db.Chats)
                             {
-                                var members = await Bot.GetChatMembersCountAsync(chat.Id);
-                                if(members > 300)
-                                    dict.Add(chat.Title, members);
+                                try
+                                {
+                                    var members = await Bot.GetChatMembersCountAsync(chat.Id);
+                                    if (members > 300)
+                                        dict.Add(chat.Username, members);
+                                }
+                                catch (Telegram.Bot.Exceptions.ApiRequestException) { }
                             }
                             foreach (var pair in dict.OrderByDescending(pair => pair.Value))
                             {
-                                report += $"{pair.Key} - {pair.Value}\n";
+                                report += $"{pair.Key ?? "<Nousername>"} - {pair.Value}\n";
                             }
                         }
                         await Bot.SendTextMessageAsync(message.Chat.Id, report); ;
