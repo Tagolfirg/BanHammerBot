@@ -58,7 +58,7 @@ namespace BanHammer
 
             if (message == null) return;
 
-            if (message.Text == "/chatlist" || message.Text == "/chatlist@tractorbanhammerbot")
+            if (message.Text == "/chatlist")
             {
                 string usage = "";
                 try
@@ -75,13 +75,13 @@ namespace BanHammer
 
             if (message.Chat.Type == ChatType.Private)
             {
-                if (message.From.Username == "CrimeanOM")
+                if (message.From.Username == "<OwnerUsername>")
                 {
                     if (message.Text == "/usage")
                     {
-                        string helpmsg = $@"/newAdmin <i>@adminusername</i>
-/removeAdmin <i>@adminusername</i>
-/admins <i>Admins list</i>";
+                        string helpmsg = $@"/newAdmin <i>@adminusername</i> - add new admin
+/removeAdmin <i>@adminusername</i> - remove admin
+/admins <i>Admins list</i>"; 
                         await Bot.SendTextMessageAsync(message.Chat.Id, helpmsg, ParseMode.Html, true);
                     }
                     else if (message.Text.StartsWith("/newAdmin"))
@@ -316,13 +316,11 @@ namespace BanHammer
                                     }
                                 }
                             }
-
                         }
                         try
                         {
                             await Bot.DeleteMessageAsync(message.Chat.Id, reply.MessageId);
                             await Bot.DeleteMessageAsync(message.Chat.Id, message.MessageId);
-                            await Bot.SendTextMessageAsync(message.Chat.Id, $"{reply.From.Username ?? reply.From.FirstName + " " + reply.From.LastName} наказан!");
                         }
                         catch (Telegram.Bot.Exceptions.ApiRequestException) { }
                         DB.SpamersAdd(reply.From);
@@ -348,9 +346,7 @@ namespace BanHammer
                     DB.SpamersAdd(message.From);
                     try
                     {
-                        string msg = $"{message.From.Username ?? message.From.FirstName + " " + message.From.LastName} наказан!";
                         await Bot.DeleteMessageAsync(message.Chat.Id, message.MessageId);
-                        await Bot.SendTextMessageAsync(message.Chat.Id, msg);
                     }
                     catch (Telegram.Bot.Exceptions.ApiRequestException) { }
                 }
@@ -361,9 +357,7 @@ namespace BanHammer
                     DB.SpamersAdd(message.From);
                     try
                     {
-                        string msg = $"{message.From.Username ?? message.From.FirstName + " " + message.From.LastName} наказан!";
                         await Bot.DeleteMessageAsync(message.Chat.Id, message.MessageId);
-                        await Bot.SendTextMessageAsync(message.Chat.Id, msg);
                     }
                     catch (Telegram.Bot.Exceptions.ApiRequestException) { }
                 }
@@ -836,9 +830,6 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-
-            // Donate menu
-            DonateCallback(callback, me);
         }
         private static async void BotOnUpdateRecieved(object sender, UpdateEventArgs updateEventArgs)
         {
