@@ -1,4 +1,5 @@
+
 # BanHammerBot
 Anti-spam bot for telegram
 
-just add bot to your chat and promote to admin.
+just add @tractorbanhammerbot to your chat and promote to admin.
