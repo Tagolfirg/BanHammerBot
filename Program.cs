@@ -139,25 +139,34 @@ namespace BanHammer
                     }
                     else if (message.Text == "/chats")
                     {
-                        string report = null;
-                        using (var db = new DBcontext())
+                        string report = "Chats, where members count > 300:\n";
+
+                        int total = 0;
+
+                        Dictionary<string, int> dict = new Dictionary<string, int>();
+
+                        foreach (var chat in chats)
                         {
-                            Dictionary<string, int> dict = new Dictionary<string, int>();
-                            foreach (var chat in db.Chats)
+                            try
                             {
-                                try
-                                {
-                                    var members = await Bot.GetChatMembersCountAsync(chat.Id);
-                                    if (members > 300)
-                                        dict.Add(chat.Username, members);
-                                }
-                                catch (Telegram.Bot.Exceptions.ApiRequestException) { }
+                                int members = await Bot.GetChatMembersCountAsync(chat.Id);
+                                if (members > 300)
+                                    dict.Add(chat.Username, members);
+                                total += members;
                             }
-                            foreach (var pair in dict.OrderByDescending(pair => pair.Value))
+                            catch (Telegram.Bot.Exceptions.ApiRequestException)
                             {
-                                report += $"{pair.Key ?? "<Nousername>"} - {pair.Value}\n";
+                                DB.ChatsRemove(chat.Id);
                             }
                         }
+
+                        foreach (var pair in dict.OrderByDescending(pair => pair.Value))
+                        {
+                            report += $"@{pair.Key ?? "<Nousername>"} - {pair.Value}\n";
+                        }
+
+                        report += $"Total users: {total}";
+
                         await Bot.SendTextMessageAsync(message.Chat.Id, report); ;
                     }
                     else if (message.Text == "/editchatlist")
@@ -166,7 +175,6 @@ namespace BanHammer
                         await Bot.SendTextMessageAsync(message.Chat.Id, "Ну давай, отправь мне чатлист");
                     }
                 }
-                else if (message.Text != "/chatlist")
 
                 foreach (var id in kwdAddMode)
                 {

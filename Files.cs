@@ -234,11 +234,11 @@ namespace BanHammer
                 }
             }
         }
-        public static void ChatsRemove(Chat chat)
+        public static void ChatsRemove(long chatid)
         {
             using (var db = new DBcontext())
             {
-                var a = from b in db.Chats where b.Id == Int64.Parse(chat.Id) select b;
+                var a = from b in db.Chats where b.Id == chatid select b;
                 db.Chats.Remove(a.Single());
                 try
                 {
