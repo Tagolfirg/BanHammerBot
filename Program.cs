@@ -180,12 +180,19 @@ namespace BanHammer
                 {
                     if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
                     {
+                        var keyboard = new InlineKeyboardMarkup(new[]
+                       {
+                                new []
+                                {
+                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                }
+                        });
                         if (keywords.Any(a => a.keyword == message.Text.ToLower()))
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Такая фраза уже есть!");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Такая фраза уже есть!\nРежим ввода ключевых слов для сообщений.\nВведите слово или фразу:", replyMarkup: keyboard);
                         else
                         {
                             DB.KeywordsAdd(message.Text.ToLower());
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Добавлено.");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Добавлено.\nРежим ввода ключевых слов для сообщений.\nВведите слово или фразу:", replyMarkup: keyboard);
                         }
                     }
                 }
@@ -193,13 +200,21 @@ namespace BanHammer
                 {
                     if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
                     {
+                        string usage = $"Режим удаления ключевых слов для сообщений\nВведите слово или фразу. Которое нужно удалить.";
+                        var keyboard = new InlineKeyboardMarkup(new[]
+                        {
+                                new []
+                                {
+                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                }
+                        });
                         if (keywords.Any(a => a.keyword == message.Text.ToLower()))
                         {
                             DB.KeywordsRemove(message.Text.ToLower());
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Фраза удалена.");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, $"Фраза удалена.\n{usage}", replyMarkup: keyboard);
                         }
                         else
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Нет такой фразы!");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, $"Нет такой фразы!\n{usage}", replyMarkup: keyboard);
                     }
                 }
 
@@ -207,12 +222,19 @@ namespace BanHammer
                 {
                     if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
                     {
+                        var keyboard = new InlineKeyboardMarkup(new[]
+                        {
+                                new []
+                                {
+                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                }
+                        });
                         if (gKeywords.Any(a => a.keyword == message.Text.ToLower()))
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Такая фраза уже есть!");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Такая фраза уже есть!\nРежим ввода ключевых слов для групп\nВведите название чата или канала:", replyMarkup: keyboard);
                         else
                         {
                             DB.GKeywordsAdd(message.Text.ToLower());
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Добавлено.");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Добавлено.\nРежим ввода ключевых слов для групп\nВведите название чата или канала:", replyMarkup: keyboard);
                         }
                     }
                 }
@@ -220,13 +242,21 @@ namespace BanHammer
                 {
                     if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
                     {
+                        string usage = $"Режим удаления ключевых слов для групп\nВведите название группы. Которое нужно удалить.";
+                        var keyboard = new InlineKeyboardMarkup(new[]
+                        {
+                                new []
+                                {
+                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                }
+                        });
                         if (gKeywords.Any(a => a.keyword == message.Text.ToLower()))
                         {
                             DB.GKeywordsRemove(message.Text.ToLower());
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Фраза удалена.");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, $"Фраза удалена.\n{usage}", replyMarkup: keyboard);
                         }
                         else
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Нет такой фразы!");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, $"Нет такой фразы!\n{usage}", replyMarkup: keyboard);
                     }
                 }
 
@@ -234,13 +264,21 @@ namespace BanHammer
                 {
                     if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
                     {
+                        var keyboard = new InlineKeyboardMarkup(new[]
+                        {
+                                new []
+                                {
+                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                }
+                        });
+                        string usage = $"Режим ввода ориентировок\nВведите username:";
                         var usr = message.Text.TrimStart('@').ToLower();
                         if (wantedUsers.Any(a => a.Username == usr))
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Этот username уже есть на доске почета!");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, $"Этот username уже есть на доске почета!\n{usage}", replyMarkup: keyboard);
                         else
                         {
                             DB.WantedListAdd(usr);
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Username добавлен.");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, $"Username добавлен.\n{usage}", replyMarkup: keyboard);
                         }
                     }
                 }
@@ -248,18 +286,26 @@ namespace BanHammer
                 {
                     if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
                     {
+                        var keyboard = new InlineKeyboardMarkup(new[]
+                        {
+                                new []
+                                {
+                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                }
+                        });
+                        string usage = "Введите username. Которое нужно удалить.";
                         var usr = message.Text.TrimStart('@').ToLower();
                         if (wantedUsers.Any(a => a.Username == usr))
                         {
                             DB.WantedListRemove(usr);
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Ориентировка удалена.");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, $"Ориентировка удалена.\n{usage}", replyMarkup: keyboard);
                         }
                         else
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Я такого не разыскиваю.");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, $"Я такого не разыскиваю.\n{usage}", replyMarkup: keyboard);
                     }
                 }
 
-                foreach(var id in unban)
+                foreach (var id in unban)
                 {
                     if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
                     {
@@ -519,7 +565,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Закончить" && message.Text.StartsWith("Режим ввода ключевых слов для сообщений"))
+            else if (callback.Data == "Закончить" && message.Text.Contains("Режим ввода ключевых слов для сообщений"))
             {
                 string usage = $"Настройка ключевых слов для сообщений.\nЕсли в тексте сообщения содержится фраза или слово из списка - пользователь будет наказан.";
 
@@ -561,7 +607,7 @@ namespace BanHammer
                 }
                 if (string.IsNullOrWhiteSpace(readfile))
                     readfile = "Cписок пуст";
-                string usage = $"Введите слово или фразу. Которое нужно удалить.\n`{readfile}`";
+                string usage = $"Режим удаления ключевых слов для сообщений.\nВведите слово или фразу. Которое нужно удалить.\n`{readfile}`";
                 var k = new Keyboard();
                 k.Add("Закончить");
                 if (!kwdRemoveMode.Contains(Int32.Parse(message.Chat.Id)))
@@ -572,7 +618,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Закончить" && message.Text.StartsWith("Введите слово или фразу."))
+            else if (callback.Data == "Закончить" && message.Text.Contains("Введите слово или фразу."))
             {
                 kwdRemoveMode.Remove(Int32.Parse(message.Chat.Id));
                 string usage = $"Настройка ключевых слов для сообщений.\nЕсли в тексте сообщения содержится фраза или слово из списка - пользователь будет наказан.";
@@ -624,7 +670,7 @@ namespace BanHammer
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
 
             }
-            else if (callback.Data == "Закончить" && message.Text.StartsWith("Режим ввода ключевых слов для групп"))
+            else if (callback.Data == "Закончить" && message.Text.Contains("Режим ввода ключевых слов для групп"))
             {
                 string usage = $"Настройка ключевых слов для групп.\nЕсли сообщение переслано из канала или чата из списка - пользователь будет наказан.";
                 gKwdAddMode.Remove(Int32.Parse(message.Chat.Id));
@@ -665,7 +711,7 @@ namespace BanHammer
                 }
                 if (string.IsNullOrWhiteSpace(readfile))
                     readfile = "Cписок пуст.";
-                string usage = $"Введите слово или фразу. Которое нужно удалить.\n`{readfile}`";
+                string usage = $"Режим удаления ключевых слов для групп\nВведите название группы. Которое нужно удалить\n`{readfile}`";
                 var k = new Keyboard();
                 k.Add("Закончить");
                 if (!gKwdRemoveMode.Contains(Int32.Parse(message.Chat.Id)))
@@ -677,7 +723,7 @@ namespace BanHammer
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
 
             }
-            else if (callback.Data == "Закончить" && message.Text.StartsWith("Введите название группы."))
+            else if (callback.Data == "Закончить" && message.Text.Contains("Введите название группы."))
             {
                 gKwdRemoveMode.Remove(Int32.Parse(message.Chat.Id));
                 string usage = $"Настройка ключевых слов для групп.\nЕсли сообщение переслано из канала или чата из списка - пользователь будет наказан.";
@@ -728,7 +774,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException e) { }
             }
-            else if (callback.Data == "Закончить" && message.Text.StartsWith("Режим ввода ориентировок"))
+            else if (callback.Data == "Закончить" && message.Text.Contains("Режим ввода ориентировок"))
             {
                 wantedAddMode.Remove(Int32.Parse(message.Chat.Id));
                 string usage = $"Доска почета.\nЕсли юзернейм нового участника группы будет совпадать с доской почета - участник будет наказан.Так же банхаммер сверит с ней всех участников всех чатов.";
@@ -781,7 +827,7 @@ namespace BanHammer
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
 
             }
-            else if (callback.Data == "Закончить" && message.Text.StartsWith("Введите username."))
+            else if (callback.Data == "Закончить" && message.Text.Contains("Введите username."))
             {
                 wantedRemoveMode.Remove(Int32.Parse(message.Chat.Id));
                 string usage = $"Доска почета.\nЕсли юзернейм нового участника группы будет совпадать с доской почета - участник будет наказан.Так же банхаммер сверит с ней всех участников всех чатов.";
