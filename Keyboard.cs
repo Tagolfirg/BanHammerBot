@@ -25,17 +25,17 @@ namespace BanHammer
             {
                 new []
                 {
-                    new InlineKeyboardButton(button1, button1),
-                    new InlineKeyboardButton(button2, button2),
+                    new InlineKeyboardCallbackButton(button1, button1),
+                    new InlineKeyboardCallbackButton(button2, button2),
                 },
                 new []
                 {
-                    new InlineKeyboardButton(button3, button3),
-                    new InlineKeyboardButton(button4, button4),
+                    new InlineKeyboardCallbackButton(button3, button3),
+                    new InlineKeyboardCallbackButton(button4, button4),
                 },
                   new []
                 {
-                    new InlineKeyboardButton(button5, button5),
+                    new InlineKeyboardCallbackButton(button5, button5),
                 }
             });
             key = keyboard;
@@ -46,13 +46,13 @@ namespace BanHammer
             {
                 new []
                 {
-                    new InlineKeyboardButton(button1, button1),
-                    new InlineKeyboardButton(button2, button2),
+                    new InlineKeyboardCallbackButton(button1, button1),
+                    new InlineKeyboardCallbackButton(button2, button2),
                 },
                 new []
                 {
-                    new InlineKeyboardButton(button3, button3),
-                    new InlineKeyboardButton(button4, button4),
+                    new InlineKeyboardCallbackButton(button3, button3),
+                    new InlineKeyboardCallbackButton(button4, button4),
                 }
             });
             key = keyboard;
@@ -63,12 +63,12 @@ namespace BanHammer
             {
                 new []
                 {
-                    new InlineKeyboardButton(button1, button1),
-                    new InlineKeyboardButton(button2, button2),
+                    new InlineKeyboardCallbackButton(button1, button1),
+                    new InlineKeyboardCallbackButton(button2, button2),
                 },
                 new []
                 {
-                    new InlineKeyboardButton(button3, button3),
+                    new InlineKeyboardCallbackButton(button3, button3),
                 }
             });
             key = keyboard;
@@ -79,8 +79,8 @@ namespace BanHammer
           {
                 new []
                 {
-                    new InlineKeyboardButton(button1, button1),
-                    new InlineKeyboardButton(button2, button2),
+                    new InlineKeyboardCallbackButton(button1, button1),
+                    new InlineKeyboardCallbackButton(button2, button2),
                 },
             });
             key = keyboard;
@@ -91,7 +91,7 @@ namespace BanHammer
           {
                 new []
                 {
-                    new InlineKeyboardButton(button1, button1),
+                    new InlineKeyboardCallbackButton(button1, button1),
                 },
             });
             key = keyboard;

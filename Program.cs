@@ -6,6 +6,7 @@ using System.IO;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.InlineKeyboardButtons;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -30,18 +31,18 @@ namespace BanHammer
             Bot.StopReceiving();
         }
 
-        static List<int> kwdAddMode = new List<int>();
-        static List<int> kwdRemoveMode = new List<int>();
-        static List<int> gKwdAddMode = new List<int>();
-        static List<int> gKwdRemoveMode = new List<int>();
-        static List<int> wantedAddMode = new List<int>();
-        static List<int> wantedRemoveMode = new List<int>();
-        static List<int> editChatlistMode = new List<int>();
+        static List<long> kwdAddMode = new List<long>();
+        static List<long> kwdRemoveMode = new List<long>();
+        static List<long> gKwdAddMode = new List<long>();
+        static List<long> gKwdRemoveMode = new List<long>();
+        static List<long> wantedAddMode = new List<long>();
+        static List<long> wantedRemoveMode = new List<long>();
+        static List<long> editChatlistMode = new List<long>();
 
-        static List<int> messages = new List<int>();
-        static List<int> groups = new List<int>();
-        static List<int> deck = new List<int>();
-        static List<int> unban = new List<int>();
+        static List<long> messages = new List<long>();
+        static List<long> groups = new List<long>();
+        static List<long> deck = new List<long>();
+        static List<long> unban = new List<long>();
 
         private static async void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs)
         {
@@ -81,7 +82,8 @@ namespace BanHammer
                     {
                         string helpmsg = $@"/newAdmin <i>@adminusername</i> - add new admin
 /removeAdmin <i>@adminusername</i> - remove admin
-/admins <i>Admins list</i>"; 
+/admins <i>Admins list</i>
+/editchatlist"; 
                         await Bot.SendTextMessageAsync(message.Chat.Id, helpmsg, ParseMode.Html, true);
                     }
                     else if (message.Text.StartsWith("/newAdmin"))
@@ -117,7 +119,8 @@ namespace BanHammer
 Так же банхаммер добавит в ключевые слова все ссылки которые были в сообщении.
 Если ответить на сообщение командой /clean - бот удалит его.
 /start - для вызова меню.
-/chats - топ чатов.";
+/chats - топ чатов.
+reply + /mute - restrict user to readonly mode (avaliable for all administrators)";
                         await Bot.SendTextMessageAsync(message.Chat.Id, usage);
                     }
                     else if (message.Text == "/start")
@@ -126,13 +129,13 @@ namespace BanHammer
                         {
                                 new []
                                 {
-                                    new InlineKeyboardButton("Сообщения", "Сообщения"),
-                                    new InlineKeyboardButton("Группы", "Группы"),
+                                    new InlineKeyboardCallbackButton("Сообщения", "Сообщения"),
+                                    new InlineKeyboardCallbackButton("Группы", "Группы"),
                                 },
                                 new []
                                 {
-                                    new InlineKeyboardButton("Доска почета", "Доска почета"),
-                                    new InlineKeyboardButton("Освободить", "Освободить"),
+                                    new InlineKeyboardCallbackButton("Доска почета", "Доска почета"),
+                                    new InlineKeyboardCallbackButton("Освободить", "Освободить"),
                                 }
                          });
                         await Bot.SendTextMessageAsync(message.Chat.Id, $"Настройки {me.Username}", replyMarkup: keyboard);
@@ -171,20 +174,20 @@ namespace BanHammer
                     }
                     else if (message.Text == "/editchatlist")
                     {
-                        editChatlistMode.Add(Int32.Parse(message.Chat.Id));
+                        editChatlistMode.Add(message.Chat.Id);
                         await Bot.SendTextMessageAsync(message.Chat.Id, "Ну давай, отправь мне чатлист");
                     }
                 }
 
                 foreach (var id in kwdAddMode)
                 {
-                    if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
+                    if (!message.Text.StartsWith("/") && id == message.From.Id)
                     {
                         var keyboard = new InlineKeyboardMarkup(new[]
                        {
                                 new []
                                 {
-                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                    new InlineKeyboardCallbackButton("Закончить", "Закончить"),
                                 }
                         });
                         if (keywords.Any(a => a.keyword == message.Text.ToLower()))
@@ -198,14 +201,14 @@ namespace BanHammer
                 }
                 foreach (var id in kwdRemoveMode)
                 {
-                    if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
+                    if (!message.Text.StartsWith("/") && id == message.From.Id)
                     {
                         string usage = $"Режим удаления ключевых слов для сообщений\nВведите слово или фразу. Которое нужно удалить.";
                         var keyboard = new InlineKeyboardMarkup(new[]
                         {
                                 new []
                                 {
-                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                    new InlineKeyboardCallbackButton("Закончить", "Закончить"),
                                 }
                         });
                         if (keywords.Any(a => a.keyword == message.Text.ToLower()))
@@ -220,13 +223,13 @@ namespace BanHammer
 
                 foreach (var id in gKwdAddMode)
                 {
-                    if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
+                    if (!message.Text.StartsWith("/") && id == message.From.Id)
                     {
                         var keyboard = new InlineKeyboardMarkup(new[]
                         {
                                 new []
                                 {
-                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                    new InlineKeyboardCallbackButton("Закончить", "Закончить"),
                                 }
                         });
                         if (gKeywords.Any(a => a.keyword == message.Text.ToLower()))
@@ -240,14 +243,14 @@ namespace BanHammer
                 }
                 foreach (var id in gKwdRemoveMode)
                 {
-                    if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
+                    if (!message.Text.StartsWith("/") && id == message.From.Id)
                     {
                         string usage = $"Режим удаления ключевых слов для групп\nВведите название группы. Которое нужно удалить.";
                         var keyboard = new InlineKeyboardMarkup(new[]
                         {
                                 new []
                                 {
-                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                    new InlineKeyboardCallbackButton("Закончить", "Закончить"),
                                 }
                         });
                         if (gKeywords.Any(a => a.keyword == message.Text.ToLower()))
@@ -262,13 +265,13 @@ namespace BanHammer
 
                 foreach (var id in wantedAddMode)
                 {
-                    if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
+                    if (!message.Text.StartsWith("/") && id == message.From.Id)
                     {
                         var keyboard = new InlineKeyboardMarkup(new[]
                         {
                                 new []
                                 {
-                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                    new InlineKeyboardCallbackButton("Закончить", "Закончить"),
                                 }
                         });
                         string usage = $"Режим ввода ориентировок\nВведите username:";
@@ -284,13 +287,13 @@ namespace BanHammer
                 }
                 foreach (var id in wantedRemoveMode)
                 {
-                    if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
+                    if (!message.Text.StartsWith("/") && id == message.From.Id)
                     {
                         var keyboard = new InlineKeyboardMarkup(new[]
                         {
                                 new []
                                 {
-                                    new InlineKeyboardButton("Закончить", "Закончить"),
+                                    new InlineKeyboardCallbackButton("Закончить", "Закончить"),
                                 }
                         });
                         string usage = "Введите username. Которое нужно удалить.";
@@ -307,7 +310,7 @@ namespace BanHammer
 
                 foreach (var id in unban)
                 {
-                    if (!message.Text.StartsWith("/") && id == Int32.Parse(message.From.Id))
+                    if (!message.Text.StartsWith("/") && id == message.From.Id)
                     {
                         List<Spamer> spamers = DB.ReadSpamers();
                         var usr = message.Text.TrimStart('@').ToLower();
@@ -325,7 +328,7 @@ namespace BanHammer
                 {
                     foreach (var id in editChatlistMode)
                     {
-                        if (Int32.Parse(message.Chat.Id) == id && !message.Text.StartsWith("/"))
+                        if (message.Chat.Id == id && !message.Text.StartsWith("/"))
                         {
                             System.IO.File.WriteAllText($@"Resources/chatlist", message.Text);
                             await Bot.SendTextMessageAsync(message.Chat.Id, "Done!");
@@ -338,8 +341,20 @@ namespace BanHammer
             //Work in supergroup
             if (message.Chat.Type == ChatType.Supergroup)
             {
+                //Mute command
+                var adms = await Bot.GetChatAdministratorsAsync(message.Chat.Id);
+                bool isMeAdmin = adms.Any(a => a.User.Id.ToString() == me.Id.ToString());
+                if (adms.Any(a => a.User.Id == message.From.Id) && isMeAdmin == true)
+                {
+                    if (reply != null && message.Text == "/mute")
+                    {
+                        DateTime date = new DateTime(2050, 5, 1);
+                        await Bot.RestrictChatMemberAsync(message.Chat.Id, reply.From.Id, date, false, false, false, false);
+                    }
+                }
+
                 //chat add
-                if (!chats.Any(a => a.Id == Int64.Parse(message.Chat.Id)))
+                if (!chats.Any(a => a.Id == message.Chat.Id))
                     DB.ChatsAdd(message.Chat);
                 
                 //kill & clean
@@ -438,12 +453,12 @@ namespace BanHammer
                 {
                     foreach (var newUser in message.NewChatMembers)
                     {
-                        if (spamers.Any(a => a.Id == Int32.Parse(newUser.Id)) || newUser.Username != null && wantedUsers.Any(a => a.Username == newUser.Username.ToLower()))
+                        if (spamers.Any(a => a.Id == newUser.Id) || newUser.Username != null && wantedUsers.Any(a => a.Username == newUser.Username.ToLower()))
                         {
                             ChatMember[] adminArr = await Bot.GetChatAdministratorsAsync(message.Chat.Id);
-                            if (adminArr.Any(a => a.User.Id.ToString() == me.Id))
+                            if (adminArr.Any(a => a.User.Id == me.Id))
                             {
-                                await Bot.KickChatMemberAsync(message.Chat.Id, Int32.Parse(newUser.Id));
+                                await Bot.KickChatMemberAsync(message.Chat.Id, newUser.Id);
                                 string file = $@"{Directory.GetCurrentDirectory()}/Resources/ButlerSticker.webp";
                                 using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
                                 {
@@ -480,14 +495,14 @@ namespace BanHammer
                 }
 
                 //spamers work
-                if (spamers.Any(a => a.Id == Int32.Parse(message.From.Id)))
+                if (spamers.Any(a => a.Id == message.From.Id))
                 {
                     try
                     {
                         ChatMember[] adminArr = await Bot.GetChatAdministratorsAsync(message.Chat.Id);
-                        if (adminArr.Any(a => a.User.Id.ToString() == me.Id))
+                        if (adminArr.Any(a => a.User.Id == me.Id))
                         {
-                            await Bot.KickChatMemberAsync(message.Chat.Id, Int32.Parse(message.From.Id));
+                            await Bot.KickChatMemberAsync(message.Chat.Id, message.From.Id);
                         }
                         else
                         {
@@ -526,13 +541,13 @@ namespace BanHammer
             {
                     new []
                     {
-                        new InlineKeyboardButton("Сообщения", "Сообщения"),
-                        new InlineKeyboardButton("Группы", "Группы"),
+                        new InlineKeyboardCallbackButton("Сообщения", "Сообщения"),
+                        new InlineKeyboardCallbackButton("Группы", "Группы"),
                     },
                     new []
                     {
-                        new InlineKeyboardButton("Доска почета", "Доска почета"),
-                        new InlineKeyboardButton("Освободить", "Освободить"),
+                        new InlineKeyboardCallbackButton("Доска почета", "Доска почета"),
+                        new InlineKeyboardCallbackButton("Освободить", "Освободить"),
                     }
             });
 
@@ -542,8 +557,8 @@ namespace BanHammer
 
             if (callback.Data == "Сообщения")
             {
-                if (!messages.Any(a => a.ToString() == message.Chat.Id))
-                    messages.Add(Int32.Parse(message.Chat.Id));
+                if (!messages.Any(a => a == message.Chat.Id))
+                    messages.Add(message.Chat.Id);
                 string usage = $"Настройка ключевых слов для сообщений.\nЕсли в тексте сообщения содержится фраза или слово из списка -пользователь будет наказан.";
                 var k = new Keyboard();
                 k.Add("Добавить", "Показать", "Удалить запись", "Очистить всё", "Назад");
@@ -553,12 +568,12 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Добавить" && messages.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Добавить" && messages.Any(a => a == message.Chat.Id))
             {
                 var k = new Keyboard();
                 k.Add("Закончить");
-                if (!kwdAddMode.Contains(Int32.Parse(message.Chat.Id)))
-                    kwdAddMode.Add(Int32.Parse(message.Chat.Id));
+                if (!kwdAddMode.Contains(message.Chat.Id))
+                    kwdAddMode.Add(message.Chat.Id);
                 try
                 {
                     await Bot.EditMessageTextAsync(message.Chat.Id, message.MessageId, "Режим ввода ключевых слов для сообщений\nВведите слово или фразу:", replyMarkup: k.key);
@@ -569,7 +584,7 @@ namespace BanHammer
             {
                 string usage = $"Настройка ключевых слов для сообщений.\nЕсли в тексте сообщения содержится фраза или слово из списка - пользователь будет наказан.";
 
-                kwdAddMode.Remove(Int32.Parse(message.Chat.Id));
+                kwdAddMode.Remove(message.Chat.Id);
                 var k = new Keyboard();
                 k.Add("Добавить", "Показать", "Удалить запись", "Очистить всё", "Назад");
                 try
@@ -578,7 +593,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Показать" && messages.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Показать" && messages.Any(a => a == message.Chat.Id))
             {
                 List<Keyword> keywords = DB.ReadKeywords();
                 string readfile = "";
@@ -597,7 +612,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Удалить запись" && messages.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Удалить запись" && messages.Any(a => a== message.Chat.Id))
             {
                 List<Keyword> keywords = DB.ReadKeywords();
                 string readfile = "";
@@ -610,8 +625,8 @@ namespace BanHammer
                 string usage = $"Режим удаления ключевых слов для сообщений.\nВведите слово или фразу. Которое нужно удалить.\n`{readfile}`";
                 var k = new Keyboard();
                 k.Add("Закончить");
-                if (!kwdRemoveMode.Contains(Int32.Parse(message.Chat.Id)))
-                    kwdRemoveMode.Add(Int32.Parse(message.Chat.Id));
+                if (!kwdRemoveMode.Contains(message.Chat.Id))
+                    kwdRemoveMode.Add(message.Chat.Id);
                 try
                 {
                     await Bot.EditMessageTextAsync(message.Chat.Id, message.MessageId, usage, ParseMode.Markdown, replyMarkup: k.key);
@@ -620,7 +635,7 @@ namespace BanHammer
             }
             else if (callback.Data == "Закончить" && message.Text.Contains("Введите слово или фразу."))
             {
-                kwdRemoveMode.Remove(Int32.Parse(message.Chat.Id));
+                kwdRemoveMode.Remove(message.Chat.Id);
                 string usage = $"Настройка ключевых слов для сообщений.\nЕсли в тексте сообщения содержится фраза или слово из списка - пользователь будет наказан.";
                 var k = new Keyboard();
                 k.Add("Добавить", "Показать", "Удалить запись", "Очистить всё", "Назад");
@@ -630,7 +645,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Очистить всё" && messages.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Очистить всё" && messages.Any(a => a == message.Chat.Id))
             {
                 DB.KeywordsClear();
                 string readfile = "Список пуст.";
@@ -646,8 +661,8 @@ namespace BanHammer
 
             else if (callback.Data == "Группы")
             {
-                if (!groups.Any(a => a.ToString() == message.Chat.Id))
-                    groups.Add(Int32.Parse(message.Chat.Id));
+                if (!groups.Any(a => a == message.Chat.Id))
+                    groups.Add(message.Chat.Id);
                 string usage = $"Настройка ключевых слов для групп.\nЕсли сообщение переслано из канала или чата из списка - пользователь будет наказан.";
                 var k = new Keyboard();
                 k.Add("Добавить", "Показать", "Удалить запись", "Очистить всё", "Назад");
@@ -657,12 +672,12 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Добавить" && groups.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Добавить" && groups.Any(a => a == message.Chat.Id))
             {
                 var k = new Keyboard();
                 k.Add("Закончить");
-                if (!gKwdAddMode.Contains(Int32.Parse(message.Chat.Id)))
-                    gKwdAddMode.Add(Int32.Parse(message.Chat.Id));
+                if (!gKwdAddMode.Contains(message.Chat.Id))
+                    gKwdAddMode.Add(message.Chat.Id);
                 try
                 {
                     await Bot.EditMessageTextAsync(message.Chat.Id, message.MessageId, "Режим ввода ключевых слов для групп\nВведите название чата или канала:", replyMarkup: k.key);
@@ -673,7 +688,7 @@ namespace BanHammer
             else if (callback.Data == "Закончить" && message.Text.Contains("Режим ввода ключевых слов для групп"))
             {
                 string usage = $"Настройка ключевых слов для групп.\nЕсли сообщение переслано из канала или чата из списка - пользователь будет наказан.";
-                gKwdAddMode.Remove(Int32.Parse(message.Chat.Id));
+                gKwdAddMode.Remove(message.Chat.Id);
                 var k = new Keyboard();
                 k.Add("Добавить", "Показать", "Удалить запись", "Очистить всё", "Назад");
                 try
@@ -682,7 +697,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Показать" && groups.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Показать" && groups.Any(a => a == message.Chat.Id))
             {
                 List<GKeyword> keywords = DB.ReadGKeywords();
                 string readfile = "";
@@ -701,7 +716,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Удалить запись" && groups.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Удалить запись" && groups.Any(a => a == message.Chat.Id))
             {
                 List<GKeyword> gKeywords = DB.ReadGKeywords();
                 string readfile = "";
@@ -714,8 +729,8 @@ namespace BanHammer
                 string usage = $"Режим удаления ключевых слов для групп\nВведите название группы. Которое нужно удалить\n`{readfile}`";
                 var k = new Keyboard();
                 k.Add("Закончить");
-                if (!gKwdRemoveMode.Contains(Int32.Parse(message.Chat.Id)))
-                    gKwdRemoveMode.Add(Int32.Parse(message.Chat.Id));
+                if (!gKwdRemoveMode.Contains(message.Chat.Id))
+                    gKwdRemoveMode.Add(message.Chat.Id);
                 try
                 {
                     await Bot.EditMessageTextAsync(message.Chat.Id, message.MessageId, usage, ParseMode.Markdown, replyMarkup: k.key);
@@ -725,7 +740,7 @@ namespace BanHammer
             }
             else if (callback.Data == "Закончить" && message.Text.Contains("Введите название группы."))
             {
-                gKwdRemoveMode.Remove(Int32.Parse(message.Chat.Id));
+                gKwdRemoveMode.Remove(message.Chat.Id);
                 string usage = $"Настройка ключевых слов для групп.\nЕсли сообщение переслано из канала или чата из списка - пользователь будет наказан.";
                 var k = new Keyboard();
                 k.Add("Добавить", "Показать", "Удалить запись", "Очистить всё", "Назад");
@@ -735,7 +750,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Очистить всё" && groups.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Очистить всё" && groups.Any(a => a == message.Chat.Id))
             {
                 DB.GKeywordsClear();
                 string readfile = "Cписок пуст.";
@@ -751,8 +766,8 @@ namespace BanHammer
 
             else if (callback.Data == "Доска почета")
             {
-                if (!deck.Any(a => a.ToString() == message.Chat.Id))
-                    deck.Add(Int32.Parse(message.Chat.Id));
+                if (!deck.Any(a => a == message.Chat.Id))
+                    deck.Add(message.Chat.Id);
                 string usage = $"Доска почета.\nЕсли юзернейм нового участника группы будет совпадать с доской почета - участник будет наказан.Так же банхаммер сверит с ней всех участников всех чатов.";
                 var k = new Keyboard();
                 k.Add("Добавить", "Показать", "Удалить запись", "Очистить всё", "Назад");
@@ -762,12 +777,12 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Добавить" && deck.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Добавить" && deck.Any(a => a == message.Chat.Id))
             {
                 var k = new Keyboard();
                 k.Add("Закончить");
-                if (!wantedAddMode.Contains(Int32.Parse(message.Chat.Id)))
-                    wantedAddMode.Add(Int32.Parse(message.Chat.Id));
+                if (!wantedAddMode.Contains(message.Chat.Id))
+                    wantedAddMode.Add(message.Chat.Id);
                 try
                 {
                     await Bot.EditMessageTextAsync(callback.Message.Chat.Id, callback.Message.MessageId, "Режим ввода ориентировок\nВведите username:", replyMarkup: k.key);
@@ -776,7 +791,7 @@ namespace BanHammer
             }
             else if (callback.Data == "Закончить" && message.Text.Contains("Режим ввода ориентировок"))
             {
-                wantedAddMode.Remove(Int32.Parse(message.Chat.Id));
+                wantedAddMode.Remove(message.Chat.Id);
                 string usage = $"Доска почета.\nЕсли юзернейм нового участника группы будет совпадать с доской почета - участник будет наказан.Так же банхаммер сверит с ней всех участников всех чатов.";
                 var k = new Keyboard();
                 k.Add("Добавить", "Показать", "Удалить запись", "Очистить всё", "Назад");
@@ -786,7 +801,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Показать" && deck.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Показать" && deck.Any(a => a == message.Chat.Id))
             {
                 List<Wantedlist> wantedusers = DB.ReadWantedList();
                 string readfile = "";
@@ -805,7 +820,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Удалить запись" && deck.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Удалить запись" && deck.Any(a => a == message.Chat.Id))
             {
                 List<Wantedlist> wanted = DB.ReadWantedList();
                 string readfile = "";
@@ -818,8 +833,8 @@ namespace BanHammer
                 string usage = $"Введите username. Которое нужно удалить.\n`{readfile}`";
                 var k = new Keyboard();
                 k.Add("Закончить");
-                if (!wantedRemoveMode.Contains(Int32.Parse(message.Chat.Id)))
-                    wantedRemoveMode.Add(Int32.Parse(message.Chat.Id));
+                if (!wantedRemoveMode.Contains(message.Chat.Id))
+                    wantedRemoveMode.Add(message.Chat.Id);
                 try
                 {
                     await Bot.EditMessageTextAsync(message.Chat.Id, message.MessageId, usage, ParseMode.Markdown, replyMarkup: k.key);
@@ -829,7 +844,7 @@ namespace BanHammer
             }
             else if (callback.Data == "Закончить" && message.Text.Contains("Введите username."))
             {
-                wantedRemoveMode.Remove(Int32.Parse(message.Chat.Id));
+                wantedRemoveMode.Remove(message.Chat.Id);
                 string usage = $"Доска почета.\nЕсли юзернейм нового участника группы будет совпадать с доской почета - участник будет наказан.Так же банхаммер сверит с ней всех участников всех чатов.";
                 var k = new Keyboard();
                 k.Add("Добавить", "Показать", "Удалить запись", "Очистить всё", "Назад");
@@ -839,7 +854,7 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Очистить всё" && deck.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Очистить всё" && deck.Any(a => a == message.Chat.Id))
             {
                 DB.WantedListClear();
                 string readfile = "Cписок пуст.";
@@ -855,8 +870,8 @@ namespace BanHammer
 
             else if (callback.Data == "Освободить")
             {
-                if (!unban.Any(a => a.ToString() == message.Chat.Id))
-                    unban.Add(Int32.Parse(message.Chat.Id));
+                if (!unban.Any(a => a == message.Chat.Id))
+                    unban.Add(message.Chat.Id);
                 var k = new Keyboard();
                 k.Add("Закончить");
                 try
@@ -865,9 +880,9 @@ namespace BanHammer
                 }
                 catch (Telegram.Bot.Exceptions.ApiRequestException) { }
             }
-            else if (callback.Data == "Закончить" && unban.Any(a => a.ToString() == message.Chat.Id))
+            else if (callback.Data == "Закончить" && unban.Any(a => a == message.Chat.Id))
             {
-                unban.Remove(Int32.Parse(message.Chat.Id));
+                unban.Remove(message.Chat.Id);
                 try
                 {
                     await Bot.EditMessageTextAsync(callback.Message.Chat.Id, callback.Message.MessageId, $"Настройки {me.Username}", replyMarkup: keyboard);
@@ -877,10 +892,10 @@ namespace BanHammer
 
             else if (callback.Data == "Назад")
             {
-                if (messages.Any(a => a.ToString() == message.Chat.Id)) messages.Remove(Int32.Parse(message.Chat.Id));
-                if (groups.Any(a => a.ToString() == message.Chat.Id)) groups.Remove(Int32.Parse(message.Chat.Id));
-                if (deck.Any(a => a.ToString() == message.Chat.Id)) deck.Remove(Int32.Parse(message.Chat.Id));
-                if (unban.Any(a => a.ToString() == message.Chat.Id)) unban.Remove(Int32.Parse(message.Chat.Id));
+                if (messages.Any(a => a == message.Chat.Id)) messages.Remove(message.Chat.Id);
+                if (groups.Any(a => a == message.Chat.Id)) groups.Remove(message.Chat.Id);
+                if (deck.Any(a => a == message.Chat.Id)) deck.Remove(message.Chat.Id);
+                if (unban.Any(a => a == message.Chat.Id)) unban.Remove(message.Chat.Id);
 
                 try
                 {

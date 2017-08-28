@@ -180,7 +180,7 @@ namespace BanHammer
         {
             using (var db = new DBcontext())
             {
-                if (!db.Spamers.Any(a => a.Id == Int32.Parse(user.Id)))
+                if (!db.Spamers.Any(a => a.Id == user.Id))
                 {
                     db.Spamers.Add(new Spamer(user));
                     db.SaveChanges();
@@ -191,7 +191,7 @@ namespace BanHammer
         {
             using (var db = new DBcontext())
             {
-                var a = from b in db.Spamers where b.Id == Int32.Parse(user.Id) select b;
+                var a = from b in db.Spamers where b.Id == user.Id select b;
                 db.Spamers.Remove(a.Single());
                 try
                 {
@@ -227,7 +227,7 @@ namespace BanHammer
         {
             using (var db = new DBcontext())
             {
-                if (!db.Chats.Any(a => a.Id == Int64.Parse(chat.Id)))
+                if (!db.Chats.Any(a => a.Id == chat.Id))
                 {
                     db.Chats.Add(new MChat(chat));
                     db.SaveChanges();
